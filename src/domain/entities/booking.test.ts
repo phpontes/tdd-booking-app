@@ -46,4 +46,17 @@ describe("Booking Entity", () => {
       new Booking("1", property, user, dateRange, 5);
     }).toThrow("Número de hóspedes excede o limite. Limite: 4.");
   });
+
+  it("deve calcular o preço total com desconto", () => {
+    const property = new Property("1", "Casa", "Descrição", 4, 300);
+    const user = new User("1", "Adamastor Pitaco");
+    const dateRange = new DateRange(
+      new Date("2000-12-30"),
+      new Date("2001-01-08")
+    );
+
+    const booking = new Booking("1", property, user, dateRange, 4);
+
+    expect(booking.getTotalPrice()).toBe(300 * 9 * 0.9);
+  });
 });
