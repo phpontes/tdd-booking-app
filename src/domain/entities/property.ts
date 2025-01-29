@@ -70,7 +70,7 @@ export class Property {
     );
   }
 
-  addbooking(booking: Booking): void {
+  addBooking(booking: Booking): void {
     this.bookings.push(booking);
   }
 

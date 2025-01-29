@@ -17,11 +17,18 @@ export class Booking {
     dateRange: DateRange,
     guestCount: number
   ) {
+    if (guestCount <= 0) {
+      throw new Error("O número de hóspedes deve ser maior que zero.");
+    }
+    property.validateGuestCount(guestCount);
+
     this.id = id;
     this.property = property;
     this.user = user;
     this.dateRange = dateRange;
     this.guestCount = guestCount;
+
+    property.addBooking(this);
   }
 
   getId(): string {
