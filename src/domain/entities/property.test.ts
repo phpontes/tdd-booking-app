@@ -72,10 +72,45 @@ describe("Property Entity", () => {
       new Date("1995-12-22"),
       new Date("1995-12-27")
     );
-    
+
     new Booking("1", property, user, dateRange, 2);
 
     expect(property.isAvailable(dateRange)).toBe(false);
     expect(property.isAvailable(dateRange2)).toBe(false);
+  });
+
+  it("deve adicionar uma reserva à propriedade", () => {
+    const property = new Property("1", "Casa de praia", "Descrição", 4, 200);
+    const user = new User("1", "Jeca Tatu");
+    const dateRange = new DateRange(
+      new Date("2023-12-20"),
+      new Date("2023-12-25")
+    );
+    const booking = new Booking("1", property, user, dateRange, 2);
+  
+    property.addBooking(booking);
+  
+    expect(property.getBookings()).toContain(booking);
+  });
+  
+  it("deve adicionar múltiplas reservas à propriedade", () => {
+    const property = new Property("1", "Casa de praia", "Descrição", 4, 200);
+    const user = new User("1", "Jeca Tatu");
+    const dateRange1 = new DateRange(
+      new Date("2023-12-20"),
+      new Date("2023-12-25")
+    );
+    const dateRange2 = new DateRange(
+      new Date("2023-12-26"),
+      new Date("2023-12-30")
+    );
+    const booking1 = new Booking("1", property, user, dateRange1, 2);
+    const booking2 = new Booking("2", property, user, dateRange2, 2);
+  
+    property.addBooking(booking1);
+    property.addBooking(booking2);
+  
+    expect(property.getBookings()).toContain(booking1);
+    expect(property.getBookings()).toContain(booking2);
   });
 });

@@ -23,12 +23,17 @@ export class Booking {
     }
     property.validateGuestCount(guestCount);
 
+    if (!property.isAvailable(dateRange)) {
+      throw new Error("Propriedade não disponível para o período selecionado.");
+    }
+
     this.id = id;
     this.property = property;
     this.user = user;
     this.dateRange = dateRange;
     this.guestCount = guestCount;
     this.totalPrice = property.calculateTotalPrice(dateRange);
+    this.status = "CONFIRMED";
 
     property.addBooking(this);
   }

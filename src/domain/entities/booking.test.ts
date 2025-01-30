@@ -59,4 +59,22 @@ describe("Booking Entity", () => {
 
     expect(booking.getTotalPrice()).toBe(300 * 9 * 0.9);
   });
+
+  it("não deve realizar o agendamento quando uma propriedade não estiver disponível", () => {
+    const property = new Property("1", "Casa", "Descrição", 4, 300);
+    const user = new User("1", "Adamastor Pitaco");
+    const dateRange = new DateRange(
+      new Date("2000-12-30"),
+      new Date("2001-01-08")
+    );
+    const booking = new Booking("1", property, user, dateRange, 4);
+    const dateRange2 = new DateRange(
+      new Date("2000-12-31"),
+      new Date("2001-01-07")
+    );
+
+    expect(() => {
+      new Booking("2", property, user, dateRange2, 4);
+    }).toThrow("Propriedade não disponível para o período selecionado.");
+  });
 });
