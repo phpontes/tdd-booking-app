@@ -77,4 +77,65 @@ describe("Booking Entity", () => {
       new Booking("2", property, user, dateRange2, 4);
     }).toThrow("Propriedade não disponível para o período selecionado.");
   });
+
+  it("deve cancelar uma reserva sem reembolso quado faltar menos de 1 dia para o check-in", () => {
+    const property = new Property("1", "Casa", "Descrição", 4, 300);
+    const user = new User("1", "Zézão Firula");
+    const dateRange = new DateRange(
+      new Date("2000-12-30"),
+      new Date("2001-01-01")
+    );
+    const booking = new Booking("1", property, user, dateRange, 4);
+    const currentDate = new Date("2000-12-30");
+    booking.cancel(currentDate);
+
+    expect(booking.getStatus()).toBe("CANCELLED");
+    expect(booking.getTotalPrice()).toBe(600);
+  });
+
+  it("deve cancelar uma reserva com reembolso total quando a data for superior a 7 dias antes do check-in", () => {
+    const property = new Property("1", "Casa", "Descrição", 4, 300);
+    const user = new User("1", "Chico Butico");
+    const dateRange = new DateRange(
+      new Date("2000-12-30"),
+      new Date("2001-01-04")
+    );
+    const booking = new Booking("1", property, user, dateRange, 4);
+    const currentDate = new Date("2000-12-20");
+    booking.cancel(currentDate);
+
+    expect(booking.getStatus()).toBe("CANCELLED");
+    expect(booking.getTotalPrice()).toBe(0);
+  });
+
+  it("deve cancelar uma reserva com reembolso parcial quando a data estiver entre 1 e 7 dias antes do check-in", () => {
+    const property = new Property("1", "Casa", "Descrição", 4, 300);
+    const user = new User("1", "Vera Verão");
+    const dateRange = new DateRange(
+      new Date("2000-12-30"),
+      new Date("2001-01-04")
+    );
+    const booking = new Booking("1", property, user, dateRange, 4);
+    const currentDate = new Date("2000-12-25");
+    booking.cancel(currentDate);
+
+    expect(booking.getStatus()).toBe("CANCELLED");
+    expect(booking.getTotalPrice()).toBe(300 * 5 * 0.5);
+  });
+
+  it("não deve permitir cancelar a reserva mais que uma vez", () => {
+    const property = new Property("1", "Casa", "Descrição", 4, 300);
+    const user = new User("1", "Tarcisio Meira");
+    const dateRange = new DateRange(
+      new Date("2000-12-30"),
+      new Date("2001-01-04")
+    );
+    const booking = new Booking("1", property, user, dateRange, 4);
+    const currentDate = new Date("2000-12-25");
+    booking.cancel(currentDate);
+
+    expect(() => {
+      booking.cancel(currentDate);
+    }).toThrow("Reserva já cancelada.");
+  });
 });
