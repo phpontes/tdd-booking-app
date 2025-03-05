@@ -52,6 +52,4 @@ describe("DateRange Value Object", () => {
       new DateRange(date, date);
     }).toThrow("As datas de início e término não podem ser iguais");
   });
-
-  
 });
