@@ -20,9 +20,15 @@ describe("DateRange Value Object", () => {
     const startDate = new Date("2024-12-20");
     const endDate = new Date("2024-12-25");
     const dateRange = new DateRange(startDate, endDate);
-
     const totalNights = dateRange.getTotalNights();
 
     expect(totalNights).toBe(5);
+
+    const startDate2 = new Date("2024-12-10");
+    const endDate2 = new Date("2024-12-25");
+    const dateRange2 = new DateRange(startDate2, endDate2);
+    const totalNights2 = dateRange2.getTotalNights();
+
+    expect(totalNights2).toBe(15);
   });
 });

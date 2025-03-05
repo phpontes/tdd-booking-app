@@ -17,4 +17,9 @@ export class DateRange {
   getEndDate(): Date {
     return this.endDate;
   }
+
+  getTotalNights(): number {
+    const timeDiff = this.endDate.getTime() - this.startDate.getTime();
+    return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  }
 }
