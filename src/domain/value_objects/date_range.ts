@@ -3,7 +3,10 @@ export class DateRange {
   private readonly endDate: Date;
 
   constructor(startDate: Date, endDate: Date) {
-    if (endDate <= startDate) {
+    if (startDate == endDate) {
+      throw new Error("As datas de início e término não podem ser iguais");
+    }
+    if (endDate < startDate) {
       throw new Error("A data de término deve ser posterior à data de início");
     }
     this.startDate = startDate;
@@ -21,5 +24,9 @@ export class DateRange {
   getTotalNights(): number {
     const timeDiff = this.endDate.getTime() - this.startDate.getTime();
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  }
+
+  overlaps(other: DateRange): boolean {
+    return this.startDate < other.endDate && this.getStartDate() < this.endDate;
   }
 }
