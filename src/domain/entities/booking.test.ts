@@ -14,10 +14,10 @@ describe("Booking Entity", () => {
 
     const booking = new Booking("1", property, user, dateRange, 2);
 
-    expect(booking.getId).toBe("1");
-    expect(booking.getProperty).toBe(property);
-    expect(booking.getUser).toBe(user);
-    expect(booking.getDateRange).toBe(dateRange);
-    expect(booking.getGuestCount).toBe(2);
+    expect(booking.getId()).toBe("1");
+    expect(booking.getProperty()).toBe(property);
+    expect(booking.getUser()).toBe(user);
+    expect(booking.getDateRange()).toBe(dateRange);
+    expect(booking.getGuestCount()).toBe(2);
   });
 });
