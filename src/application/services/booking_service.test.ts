@@ -91,6 +91,10 @@ describe("BookingService", () => {
       getId: jest.fn().mockReturnValue("1"),
     } as any;
 
+    const mockUser = {
+      getId: jest.fn().mockReturnValue("1"),
+    } as any;
+
     mockPropertyService.findPropertyById.mockResolvedValue(mockProperty);
     mockUserService.findUserById.mockResolvedValue(null);
 
@@ -104,6 +108,44 @@ describe("BookingService", () => {
 
     await expect(bookingService.createBooking(bookingDTO)).rejects.toThrow(
       "Usuário não encontrado"
+    );
+  });
+
+  it("deve lançar um erro ao tentar criar uma reserva para um período já reservado", async () => {
+    const mockProperty = {
+      getId: jest.fn().mockReturnValue("1"),
+      isAvailable: jest.fn().mockReturnValue(true),
+      validateGuestCount: jest.fn(),
+      calculateTotalPrice: jest.fn().mockReturnValue(500),
+      addBooking: jest.fn(),
+    } as any;
+
+    const mockUser = {
+      getId: jest.fn().mockReturnValue("1"),
+    } as any;
+
+    mockPropertyService.findPropertyById.mockResolvedValue(mockProperty);
+    mockUserService.findUserById.mockResolvedValue(mockUser);
+
+    const bookingDTO: CreateBookingDTO = {
+      propertyId: "1",
+      guestId: "1",
+      startDate: new Date("2024-12-20"),
+      endDate: new Date("2024-12-25"),
+      guestCount: 2,
+    };
+
+    const result = await bookingService.createBooking(bookingDTO);
+
+    mockProperty.isAvailable.mockReturnValue(false);
+    mockProperty.addBooking.mockImplementationOnce(() => {
+      throw new Error(
+        "Propriedade indisponível para o período selecionado"
+      );
+    });
+
+    await expect(bookingService.createBooking(bookingDTO)).rejects.toThrow(
+      "Propriedade indisponível para o período selecionado"
     );
   });
 });
