@@ -2,7 +2,7 @@ import { Repository } from "typeorm";
 import { UserRepository } from "../../domain/repositories/user_repository";
 import { UserEntity } from "../persistence/entities/user_entity";
 import { User } from "../../domain/entities/user";
-import { UserMapper } from "../persistence/entities/mappers/user_mapper";
+import { UserMapper } from "../persistence/mappers/user_mapper";
 
 export class TypeORMUserRepository implements UserRepository {
   findOne(arg0: { where: { id: string } }) {
