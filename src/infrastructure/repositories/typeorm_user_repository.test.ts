@@ -1,5 +1,7 @@
-import { DataSource, Repository, TypeORMError } from "typeorm";
+import { UserEntity } from "../persistence/entities/user_entity";
+import { DataSource, Repository } from "typeorm";
 import { User } from "../../domain/entities/user";
+import { TypeORMUserRepository } from "./typeorm_user_repository";
 
 describe("TypeORMUserRepository", () => {
   let dataSource: DataSource;
