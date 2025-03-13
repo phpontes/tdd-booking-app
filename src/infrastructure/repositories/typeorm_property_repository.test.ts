@@ -40,4 +40,26 @@ describe("TypeORMPropertyRepository", () => {
     expect(savedProperty).not.toBeNull();
     expect(savedProperty?.id).toBe("1");
   });
+
+  it("deve retornar uma propriedade com ID válido", async () => {
+    const property = new Property(
+      "1",
+      "Casa na Praia",
+      "Baita casona na praia, bicho, com vista pro mar e tudo",
+      6,
+      200
+    );
+
+    await propertyRepository.save(property);
+
+    const savedProperty = await propertyRepository.findById("1")
+    expect(savedProperty).not.toBeNull();
+    expect(savedProperty?.getId()).toBe("1");
+    expect(savedProperty?.getName()).toBe("Casa na Praia");
+  });
+
+  it("deve retornar null ao buscar uma propriedade inexistente", async () => {
+    const property = await propertyRepository.findById("999");
+    expect(property).toBeNull();
+  });
 });
