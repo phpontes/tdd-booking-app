@@ -80,7 +80,7 @@ describe("TypeORMBookingRepository", () => {
     expect(savedBooking).toBeNull();
   });
 
-  it("deve salvar uma reserva com sucesso - fazendo cancelamento posterior", async () => {
+  it("deve salvar uma reserva com sucesso, fazendo cancelamento posterior", async () => {
     const propertyRepository = dataSource.getRepository(PropertyEntity);
     const userRepository = dataSource.getRepository(UserEntity);
 
