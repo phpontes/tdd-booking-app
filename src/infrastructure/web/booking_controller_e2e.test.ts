@@ -1,4 +1,5 @@
 import express from "express";
+import request from "supertest";
 import { DataSource } from "typeorm";
 import { TypeORMBookingRepository } from "../repositories/typeorm_booking_repository";
 import { TypeORMPropertyRepository } from "../repositories/typeorm_property_repository";
@@ -88,5 +89,20 @@ describe("BookingController", () => {
       id: "1",
       name: "Usuário de Teste",
     });
+  });
+
+  it("deve criar uma reservar com sucesso", async () => {
+    const response = await request(app).post("/bookings").send({
+      propertyId: "1",
+      guestId: "1",
+      startDate: "2024-12-20",
+      endDate: "2024-12-25",
+      guestCount: 2,
+    });
+
+    expect(response.status).toBe(201);
+    expect(response.body.message).toBe("Reserva criada com sucesso");
+    expect(response.body.booking).toHaveProperty("id");
+    expect(response.body.booking).toHaveProperty("totalPrice");
   });
 });
