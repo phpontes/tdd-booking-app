@@ -1,7 +1,10 @@
-import { DataSource, Repository } from "typeorm";
 import { PropertyEntity } from "../persistence/entities/property_entity";
+import { DataSource, Repository } from "typeorm";
 import { Property } from "../../domain/entities/property";
 import { TypeORMPropertyRepository } from "./typeorm_property_repository";
+import { BookingEntity } from "../persistence/entities/booking_entity";
+import { User } from "../../domain/entities/user";
+import { UserEntity } from "../persistence/entities/user_entity";
 
 describe("TypeORMPropertyRepository", () => {
   let dataSource: DataSource;
@@ -13,7 +16,7 @@ describe("TypeORMPropertyRepository", () => {
       type: "sqlite",
       database: ":memory:",
       dropSchema: true,
-      entities: [PropertyEntity],
+      entities: [PropertyEntity, BookingEntity, UserEntity],
       synchronize: true,
       logging: false,
     });
@@ -26,11 +29,11 @@ describe("TypeORMPropertyRepository", () => {
     await dataSource.destroy();
   });
 
-  it("deve salvar um propriedade com sucesso", async () => {
+  it("deve salvar uma propriedade com sucesso", async () => {
     const property = new Property(
       "1",
       "Casa na Praia",
-      "Baita casona na praia, bicho, com vista pro mar e tudo",
+      "Vista para o mar",
       6,
       200
     );
@@ -41,18 +44,17 @@ describe("TypeORMPropertyRepository", () => {
     expect(savedProperty?.id).toBe("1");
   });
 
-  it("deve retornar uma propriedade com ID válido", async () => {
+  it("deve retornar uma propriedade com ID valido", async () => {
     const property = new Property(
       "1",
       "Casa na Praia",
-      "Baita casona na praia, bicho, com vista pro mar e tudo",
+      "Vista para o mar",
       6,
       200
     );
-
     await propertyRepository.save(property);
 
-    const savedProperty = await propertyRepository.findById("1")
+    const savedProperty = await propertyRepository.findById("1");
     expect(savedProperty).not.toBeNull();
     expect(savedProperty?.getId()).toBe("1");
     expect(savedProperty?.getName()).toBe("Casa na Praia");
