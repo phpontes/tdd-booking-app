@@ -10,6 +10,7 @@ import { UserService } from "../../application/services/user_service";
 import { BookingEntity } from "../persistence/entities/booking_entity";
 import { PropertyEntity } from "../persistence/entities/property_entity";
 import { UserEntity } from "../persistence/entities/user_entity";
+import { BookingController } from "./booking_controller";
 const app = express();
 app.use(express.json());
 
@@ -80,7 +81,7 @@ describe("BookingController", () => {
     await propertyRepo.save({
       id: "1",
       name: "Propriedade de Teste",
-      description: "Um lugar bacaninha para ficar",
+      description: "Um lugar incrível para ficar",
       maxGuests: 5,
       basePricePerNight: 100,
     });
@@ -101,8 +102,88 @@ describe("BookingController", () => {
     });
 
     expect(response.status).toBe(201);
-    expect(response.body.message).toBe("Reserva criada com sucesso");
+    expect(response.body.message).toBe("Booking created successfully");
     expect(response.body.booking).toHaveProperty("id");
     expect(response.body.booking).toHaveProperty("totalPrice");
+  });
+
+  it("deve retornar 400 ao tentar criar um reserva com data de início inválida", async () => {
+    const response = await request(app).post("/bookings").send({
+      propertyId: "1",
+      guestId: "1",
+      startDate: "invalid-date",
+      endDate: "2024-12-25",
+      guestCount: 2,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Data de início ou fim inválida.");
+  });
+
+  it("deve retornar 400 ao tentar criar um reserva com data de fim inválida", async () => {
+    const response = await request(app).post("/bookings").send({
+      propertyId: "1",
+      guestId: "1",
+      startDate: "2024-12-20",
+      endDate: "invalid-date",
+      guestCount: 2,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Data de início ou fim inválida.");
+  });
+
+  it("deve retornar 400 ao tentar criar um reserva com número de hóspedes inválido", async () => {
+    const response = await request(app).post("/bookings").send({
+      propertyId: "1",
+      guestId: "1",
+      startDate: "2024-12-20",
+      endDate: "2024-12-25",
+      guestCount: 0,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe(
+      "O número de hóspedes deve ser maior que zero"
+    );
+  });
+
+  it("deve retornar 400 ao tentar criar uma reserva com propertyId inválido", async () => {
+    const response = await request(app).post("/bookings").send({
+      propertyId: "invalid-id",
+      guestId: "1",
+      startDate: "2024-12-20",
+      endDate: "2024-12-25",
+      guestCount: 2,
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Propriedade não encontrada");
+  });
+
+  it("deve cancelar uma reserva", async () => {
+    const response = await request(app).post("/bookings").send({
+      propertyId: "1",
+      guestId: "1",
+      startDate: "2024-12-20",
+      endDate: "2024-12-25",
+      guestCount: 2,
+    });
+
+    const bookingId = response.body.booking.id;
+
+    const cancelResponse = await request(app).post(
+      `/bookings/${bookingId}/cancel`
+    );
+
+    expect(cancelResponse.status).toBe(200);
+    expect(cancelResponse.body.message).toBe("Reserva cancelada com sucesso.");
+  });
+
+  it("deve retornar erro ao cancelar uma reserva inexistente", async () => {
+    const cancelResponse = await request(app).post(`/bookings/999/cancel`);
+
+    expect(cancelResponse.status).toBe(400);
+    expect(cancelResponse.body.message).toBe("Reserva não encontrada.");
   });
 });

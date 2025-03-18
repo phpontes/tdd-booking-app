@@ -31,7 +31,7 @@ export class BookingController {
       const booking = await this.bookingService.createBooking(dto);
 
       return res.status(201).json({
-        message: "Reserva criada com sucesso",
+        message: "Booking created successfully",
         booking: {
           id: booking.getId(),
           propertyId: booking.getProperty().getId(),
@@ -46,7 +46,20 @@ export class BookingController {
     } catch (error: any) {
       return res
         .status(400)
-        .json({ message: error.message || "Ocorreu um erro inesperado" });
+        .json({ message: error.message || "An unexpected error occurred" });
+    }
+  }
+
+  async cancelBooking(req: Request, res: Response): Promise<Response> {
+    try {
+      const bookingId = req.params.id;
+      await this.bookingService.canceledBooking(bookingId);
+
+      return res
+        .status(200)
+        .json({ message: "Reserva cancelada com sucesso." });
+    } catch (error: any) {
+      return res.status(400).json({ message: "Reserva não encontrada." });
     }
   }
 }
